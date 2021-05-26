@@ -1,0 +1,19 @@
+service: notion-to-slack
+
+frameworkVersion: '2'
+
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+
+functions:
+  cronHandler:
+    handler: handler.run
+    events:
+      # Invoke Lambda function every 2nd minute from Mon-Fri
+      - schedule: cron(0/1 * ? * MON-FRI *)
+    environment:
+      NOTION_API_KEY: ${env:NOTION_API_KEY}
+      DATABASE_ID: ${env:DATABASE_ID}
