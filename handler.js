@@ -2,29 +2,32 @@
 const axios = require('axios');
 
 module.exports.run = async (event, context) => {
-  console.log(`Your cron function "${context.functionName}" ran at ${time}`);
-
   const today = '2021-05-27';
 
-  axios({
-    method: 'post',
-    url: `https://api.notion.com/v1/databases/${process.env.DATABASE_ID}/query`,
-    headers: {
-      'Authorization': `Bearer ${process.env.NOTION_API_KEY}`,
-      'Notion-Version': '2021-05-13',
-      'Content-Type': 'application/json',
-    },
-    data: {
-      filter: {
-        property: 'Date',
-        date: {
-          equals: today,
-        },
+  try {
+    const response = await axios({
+      method: 'post',
+      url: `https://api.notion.com/v1/databases/${process.env.DATABASE_ID}/query`,
+      headers: {
+        'Authorization': `Bearer ${process.env.NOTION_API_KEY}`,
+        'Notion-Version': '2021-05-13',
+        'Content-Type': 'application/json',
       },
-    }
-  }).then(function (response) {
+      data: {
+        filter: {
+          property: 'Date',
+          date: {
+            equals: today,
+          },
+        },
+      }
+    });
     console.log(response);
-  }).catch(function (error) {
+    response.data.results.forEach(result => {
+      console.log(JSON.stringify(result));
+      console.log(result.properties.Name.title.map(x => x.plain_text).join());
+    });
+  } catch (error) {
     console.log(error);
-  });
+  }
 };
