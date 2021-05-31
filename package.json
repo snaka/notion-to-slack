@@ -5,6 +5,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@slack/webhook": "^6.0.0",
     "axios": "^0.21.1"
   }
 }
