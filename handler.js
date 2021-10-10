@@ -6,6 +6,8 @@ const webhook = new IncomingWebhook(process.env.SLACK_WEBHOOK_URL);
 
 module.exports.run = async (event, context) => {
   const { databaseId, channel } = await getMessageConfig();
+  console.log('databaseId:', databaseId);
+  console.log('channel:', channel);
 
   // 本来は日本時間で判定しないといかないが面倒なのでUTCのまま
   const date = new Date();
@@ -28,23 +30,25 @@ module.exports.run = async (event, context) => {
 
 // 設定用ページのプロパティを読み込む
 async function getMessageConfig() {
-  const response = await axios({
-    method: 'get',
-    url: `https://api.notion.com/v1/pages/${process.env.CONFIG_PAGE_ID}`,
-    headers: {
-      'Authorization': `Bearer ${process.env.NOTION_API_KEY}`,
-      'Notion-Version': '2021-05-13',
-    },
-  });
-  console.log(response);
+  // const response = await axios({
+  //   method: 'get',
+  //   url: `https://api.notion.com/v1/pages/${process.env.CONFIG_PAGE_ID}`,
+  //   headers: {
+  //     'Authorization': `Bearer ${process.env.NOTION_API_KEY}`,
+  //     'Notion-Version': '2021-05-13',
+  //   },
+  // });
+  // console.log(response);
   return Promise.resolve({
-    channel: '#random',
-    databaseId: '2b6991f019f643feb5a2bc27a4f37d8e',
+    channel: process.env.SLACK_CHANNEL,
+    databaseId: process.env.NOTION_DATABASE_ID,
   });
 }
 
 // データベースから対象日のページを取得
 async function fetchPagesOnDate(databaseId, targetDate) {
+  console.log('targetDate:', targetDate);
+
   const response = await axios({
     method: 'post',
     url: `https://api.notion.com/v1/databases/${databaseId}/query`,

@@ -11,7 +11,9 @@ functions:
   cronHandler:
     handler: handler.run
     events:
-      # Invoke Lambda function every 2nd minute from Mon-Fri
-      - schedule: cron(0 1 ? * MON-FRI *)
+      - schedule: cron(0/5 * ? * MON-FRI *)
     environment:
       NOTION_API_KEY: ${env:NOTION_API_KEY}
+      NOTION_DATABASE_ID: ${env:NOTION_DATABASE_ID}
+      SLACK_WEBHOOK_URL: ${env:SLACK_WEBHOOK_URL}
+      SLACK_CHANNEL: ${env:SLACK_CHANNEL}
